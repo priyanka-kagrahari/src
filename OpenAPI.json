@@ -6,12 +6,12 @@
 		"termsOfService": "http://swagger.io/terms/",
 		"license": {
 			"name": "Apache 2.0",
-			"url": "http://springdoc.org"
+			"url": "https://springdoc.org"
 		},
 		"version": "0.0.1-SNAPSHOT"
 	},
 	"servers": [{
-		"url": "http://abcd.com",
+		"url": "https://abcd.com",
 		"description": "Target host URL."
 	}],
 	"tags": [{
