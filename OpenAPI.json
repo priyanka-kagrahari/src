@@ -1,0 +1,1828 @@
+{
+	"openapi": "3.0.1",
+	"info": {
+		"title": "SCIM Open API",
+		"description": "SCIM Validator which validates the JSON file against SCIM specification",
+		"termsOfService": "http://swagger.io/terms/",
+		"license": {
+			"name": "Apache 2.0",
+			"url": "http://springdoc.org"
+		},
+		"version": "0.0.1-SNAPSHOT"
+	},
+	"servers": [{
+		"url": "http://abcd.com",
+		"description": "Target host URL."
+	}],
+	"tags": [{
+		"name": "User",
+		"description": "Operations on user belonging to an organization"
+	},
+	{
+		"name": "Group",
+		"description": "Operations on group belonging to an organization"
+	},
+	{
+		"name": "Schemas",
+		"description": "Operations on schemas"
+	}],
+	"paths": {
+		"/Users": {
+			"get": {
+				"tags": ["User"],
+				"summary": "Get Users",
+				"description": "Queries multiple user identities in the organization domain. Filtering is available.",
+				"operationId": "GetUsers",
+				"parameters": [{
+					"name": "Bearer Token",
+					"in": "header",
+					"description": "Access token prefixed with 'Bearer ', e.g. 'Bearer 123456abcdef'",
+					"required": true,
+					"schema": {
+						"type": "string"
+					}
+				},
+				{
+					"name": "filter",
+					"in": "query",
+					"description": "Without a filter, all user in a user domain are returned. The filter parameter must be a properly formed SCIM filter using either the operator eq (equals) or the operator sw (starts with).",
+					"required": false,
+					"schema": {
+						"type": "string"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "The request has succeeded.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						}
+					},
+					"307": {
+						"description": "Temporary Redirect."
+					},
+					"308": {
+						"description": "Permanent Redirect."
+					},
+					"400": {
+						"description": "Request is unparsable, syntactically incorrect, or violates schema."
+					},
+					"401": {
+						"description": "Authorization failure.  The authorization header is invalid or missing."
+					},
+					"403": {
+						"description": "Operation is not permitted based on the supplied authorization."
+					},
+					"404": {
+						"description": "Not Found. Specified resource or endpoint does not exist."
+					},
+					"500": {
+						"description": "Internal Server Error."
+					}
+				}
+			},
+			"post": {
+				"tags": ["User"],
+				"summary": "Create User",
+				"description": "Creates a new organization user and adds it to the user domain.",
+				"operationId": "CreateUser",
+				"parameters": [{
+					"name": "Bearer Token",
+					"in": "header",
+					"description": "Access token prefixed with 'Bearer ', e.g. 'Bearer 123456abcdef'",
+					"required": true,
+					"schema": {
+						"type": "string"
+					}
+				},
+				{
+					"name": "body",
+					"in": "query",
+					"description": "The details of the user to create",
+					"required": true,
+					"schema": {
+						"type": "string",
+						"format": "binary"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "The user has been created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UserResource"
+								}
+							}
+						}
+					},
+					"307": {
+						"description": "Temporary Redirect."
+					},
+					"308": {
+						"description": "Permanent Redirect."
+					},
+					"400": {
+						"description": "Request is unparsable, syntactically incorrect, or violates schema."
+					},
+					"401": {
+						"description": "Authorization failure.  The authorization header is invalid or missing."
+					},
+					"403": {
+						"description": "Operation is not permitted based on the supplied authorization."
+					},
+					"404": {
+						"description": "Not Found. Specified resource or endpoint does not exist."
+					},
+					"500": {
+						"description": "Internal Server Error."
+					},
+					"413": {
+						"description": "Payload too large."
+					},
+					"409": {
+						"description": "Conflict.The specified version number does not match the resource's latest version number, or a service provider refused to create a new, duplicate resource."
+					}
+				}
+			}
+		},
+		"/Users/{userKey}": {
+			"get": {
+				"tags": ["User"],
+				"summary": "Get User",
+				"description": "Queries user identity in the organization domain.",
+				"operationId": "GetUser",
+				"parameters": [{
+					"name": "Bearer Token",
+					"in": "header",
+					"description": "Access token prefixed with 'Bearer ', e.g. 'Bearer 123456abcdef'",
+					"required": true,
+					"schema": {
+						"type": "string"
+					}
+				},
+				{
+					"name": "userKey",
+					"in": "path",
+					"description": "The key of the user to query. The user must be in the organization domain",
+					"required": true,
+					"schema": {
+						"type": "integer"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "The request has succeeded",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UserDefinition"
+								}
+							}
+						}
+					},
+					"307": {
+						"description": "Temporary Redirect."
+					},
+					"308": {
+						"description": "Permanent Redirect."
+					},
+					"400": {
+						"description": "Request is unparsable, syntactically incorrect, or violates schema."
+					},
+					"401": {
+						"description": "Authorization failure.  The authorization header is invalid or missing."
+					},
+					"403": {
+						"description": "Operation is not permitted based on the supplied authorization."
+					},
+					"404": {
+						"description": "Not Found. Specified resource or endpoint does not exist."
+					},
+					"500": {
+						"description": "Internal Server Error."
+					}
+				}
+			},
+			"put": {
+				"tags": ["User"],
+				"summary": "Replace User",
+				"description": "Updates an existing user. The request must include the full user definition. To modify one or more values without sending the full definition, see Update User",
+				"operationId": "ReplaceUser",
+				"parameters": [{
+					"name": "Bearer Token",
+					"in": "header",
+					"description": "Access token prefixed with 'Bearer ', e.g. 'Bearer 123456abcdef'",
+					"required": true,
+					"schema": {
+						"type": "string"
+					}
+				},
+				{
+					"name": "body",
+					"in": "query",
+					"description": "The new user data",
+					"required": true,
+					"schema": {
+						"type": "string",
+						"format": "binary"
+					}
+				},
+				{
+					"name": "userKey",
+					"in": "path",
+					"description": "The key of the user to query. The user must be in the organization domain",
+					"required": true,
+					"schema": {
+						"type": "integer"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "The user has been replaced.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UserDefinition"
+								}
+							}
+						}
+					},
+					"307": {
+						"description": "Temporary Redirect."
+					},
+					"308": {
+						"description": "Permanent Redirect."
+					},
+					"400": {
+						"description": "Request is unparsable, syntactically incorrect, or violates schema."
+					},
+					"401": {
+						"description": "Authorization failure.  The authorization header is invalid or missing."
+					},
+					"403": {
+						"description": "Operation is not permitted based on the supplied authorization."
+					},
+					"404": {
+						"description": "Not Found. Specified resource or endpoint does not exist."
+					},
+					"500": {
+						"description": "Internal Server Error."
+					},
+					"412": {
+						"description": "Failed to update.  Resource has changed on the server."
+					},
+					"409": {
+						"description": "Conflict.The specified version number does not match the resource's latest version number, or a service provider refused to create a new, duplicate resource."
+					}
+				}
+			},
+			"delete": {
+				"tags": ["User"],
+				"summary": "Delete User",
+				"description": "Deletes a user from the organization (but not from the account).",
+				"operationId": "DeleteUser",
+				"parameters": [{
+					"name": "Bearer Token",
+					"in": "header",
+					"description": "Access token prefixed with 'Bearer ', e.g. 'Bearer 123456abcdef'",
+					"required": true,
+					"schema": {
+						"type": "string"
+					}
+				},
+				{
+					"name": "userKey",
+					"in": "path",
+					"description": "The key of the user to query. The user must be in the organization domain",
+					"required": true,
+					"schema": {
+						"type": "integer"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "The request has succeeded"
+					},
+					"307": {
+						"description": "Temporary Redirect."
+					},
+					"308": {
+						"description": "Permanent Redirect."
+					},
+					"400": {
+						"description": "Request is unparsable, syntactically incorrect, or violates schema."
+					},
+					"401": {
+						"description": "Authorization failure.  The authorization header is invalid or missing."
+					},
+					"403": {
+						"description": "Operation is not permitted based on the supplied authorization."
+					},
+					"404": {
+						"description": "Not Found. Specified resource or endpoint does not exist."
+					},
+					"500": {
+						"description": "Internal Server Error."
+					},
+					"412": {
+						"description": "Failed to update.  Resource has changed on the server."
+					},
+					"409": {
+						"description": "Conflict.The specified version number does not match the resource's latest version number, or a service provider refused to create a new, duplicate resource."
+					}
+				}
+			},
+			"patch": {
+				"tags": ["User"],
+				"summary": "Update User",
+				"description": "Changes a limited set (or all if you choose) of the user's data.",
+				"operationId": "UpdateUser",
+				"parameters": [{
+					"name": "Bearer Token",
+					"in": "header",
+					"description": "Access token prefixed with 'Bearer ', e.g. 'Bearer 123456abcdef'",
+					"required": true,
+					"schema": {
+						"type": "string"
+					}
+				},
+				{
+					"name": "body",
+					"in": "query",
+					"description": "The new user data",
+					"required": true,
+					"schema": {
+						"type": "string",
+						"format": "binary"
+					}
+				},
+				{
+					"name": "userKey",
+					"in": "path",
+					"description": "The key of the user to query. The user must be in the organization domain",
+					"required": true,
+					"schema": {
+						"type": "integer"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "The user has been updated.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UserDefinition"
+								}
+							}
+						}
+					},
+					"307": {
+						"description": "Temporary Redirect."
+					},
+					"308": {
+						"description": "Permanent Redirect."
+					},
+					"400": {
+						"description": "Request is unparsable, syntactically incorrect, or violates schema."
+					},
+					"401": {
+						"description": "Authorization failure.  The authorization header is invalid or missing."
+					},
+					"403": {
+						"description": "Operation is not permitted based on the supplied authorization."
+					},
+					"404": {
+						"description": "Not Found. Specified resource or endpoint does not exist."
+					},
+					"500": {
+						"description": "Internal Server Error."
+					},
+					"412": {
+						"description": "Failed to update.  Resource has changed on the server."
+					},
+					"409": {
+						"description": "Conflict.The specified version number does not match the resource's latest version number, or a service provider refused to create a new, duplicate resource."
+					}
+				}
+			}
+		},
+		"/Users/me": {
+			"get": {
+				"tags": ["User"],
+				"summary": "Get Current User",
+				"description": "Queries the identity of the current authenticated user.",
+				"operationId": "GetCurrentUser",
+				"parameters": [{
+					"name": "Bearer Token",
+					"in": "header",
+					"description": "Access token prefixed with 'Bearer ', e.g. 'Bearer 123456abcdef'",
+					"required": true,
+					"schema": {
+						"type": "string"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "The request has succeeded.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UserDefinition"
+								}
+							}
+						}
+					},
+					"307": {
+						"description": "Temporary Redirect."
+					},
+					"308": {
+						"description": "Permanent Redirect."
+					},
+					"400": {
+						"description": "Request is unparsable, syntactically incorrect, or violates schema."
+					},
+					"401": {
+						"description": "Authorization failure.  The authorization header is invalid or missing."
+					},
+					"403": {
+						"description": "Operation is not permitted based on the supplied authorization."
+					},
+					"404": {
+						"description": "Not Found. Specified resource or endpoint does not exist."
+					},
+					"500": {
+						"description": "Internal Server Error."
+					}
+				}
+			},
+			"put": {
+				"tags": ["User"],
+				"summary": "Replace Current User",
+				"description": "Changes the current authenticated user's attributes. The request must include the full user definition",
+				"operationId": "ReplaceCurrentUser",
+				"parameters": [{
+					"name": "Bearer Token",
+					"in": "header",
+					"description": "Access token prefixed with 'Bearer ', e.g. 'Bearer 123456abcdef'",
+					"required": true,
+					"schema": {
+						"type": "string"
+					}
+				},
+				{
+					"name": "body",
+					"in": "query",
+					"description": "The new  user data",
+					"required": true,
+					"schema": {
+						"type": "string",
+						"format": "binary"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "The current user has been replaced.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UserDefinition"
+								}
+							}
+						}
+					},
+					"307": {
+						"description": "Temporary Redirect."
+					},
+					"308": {
+						"description": "Permanent Redirect."
+					},
+					"400": {
+						"description": "Request is unparsable, syntactically incorrect, or violates schema."
+					},
+					"401": {
+						"description": "Authorization failure.  The authorization header is invalid or missing."
+					},
+					"403": {
+						"description": "Operation is not permitted based on the supplied authorization."
+					},
+					"404": {
+						"description": "Not Found. Specified resource or endpoint does not exist."
+					},
+					"500": {
+						"description": "Internal Server Error."
+					},
+					"412": {
+						"description": "Failed to update.  Resource has changed on the server."
+					},
+					"409": {
+						"description": "Conflict.The specified version number does not match the resource's latest version number, or a service provider refused to create a new, duplicate resource."
+					}
+				}
+			},
+			"patch": {
+				"tags": ["User"],
+				"summary": "Update Current User",
+				"description": "Changes a limited set (or all if you choose) of the current authenticated user's data. The updated user email domain must be an existing organization email domain.",
+				"operationId": "UpdateCurrentUser",
+				"parameters": [{
+					"name": "Bearer Token",
+					"in": "header",
+					"description": "Access token prefixed with 'Bearer ', e.g. 'Bearer 123456abcdef'",
+					"required": true,
+					"schema": {
+						"type": "string"
+					}
+				},
+				{
+					"name": "body",
+					"in": "query",
+					"description": "The new user data",
+					"required": true,
+					"schema": {
+						"type": "string",
+						"format": "binary"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "The current user has been updated.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UserDefinition"
+								}
+							}
+						}
+					},
+					"307": {
+						"description": "Temporary Redirect."
+					},
+					"308": {
+						"description": "Permanent Redirect."
+					},
+					"400": {
+						"description": "Request is unparsable, syntactically incorrect, or violates schema."
+					},
+					"401": {
+						"description": "Authorization failure.  The authorization header is invalid or missing."
+					},
+					"403": {
+						"description": "Operation is not permitted based on the supplied authorization."
+					},
+					"404": {
+						"description": "Not Found. Specified resource or endpoint does not exist."
+					},
+					"500": {
+						"description": "Internal Server Error."
+					},
+					"412": {
+						"description": "Failed to update.  Resource has changed on the server."
+					},
+					"409": {
+						"description": "Conflict.The specified version number does not match the resource's latest version number, or a service provider refused to create a new, duplicate resource."
+					}
+				}
+			}
+		},
+		"/Groups": {
+			"get": {
+				"tags": ["Group"],
+				"summary": "Get Groups",
+				"description": "Queries multiple group identities in the organization domain. Filtering is available.",
+				"operationId": "GetGroups",
+				"parameters": [{
+					"name": "Bearer Token",
+					"in": "header",
+					"description": "Access token prefixed with 'Bearer ', e.g. 'Bearer 123456abcdef'",
+					"required": true,
+					"schema": {
+						"type": "string"
+					}
+				},
+				{
+					"name": "filter",
+					"in": "query",
+					"description": "Without a filter, all group in a user domain are returned. The filter parameter must be a properly formed SCIM filter using either the operator eq (equals) or the operator sw (starts with).",
+					"required": false,
+					"schema": {
+						"type": "string"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "The request has succeeded.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Group"
+								}
+							}
+						}
+					},
+					"307": {
+						"description": "Temporary Redirect."
+					},
+					"308": {
+						"description": "Permanent Redirect."
+					},
+					"400": {
+						"description": "Request is unparsable, syntactically incorrect, or violates schema."
+					},
+					"401": {
+						"description": "Authorization failure.  The authorization header is invalid or missing."
+					},
+					"403": {
+						"description": "Operation is not permitted based on the supplied authorization."
+					},
+					"404": {
+						"description": "Not Found. Specified resource or endpoint does not exist."
+					},
+					"500": {
+						"description": "Internal Server Error."
+					}
+				}
+			},
+			"post": {
+				"tags": ["Group"],
+				"summary": "Create Group",
+				"description": "Creates a new organization group and adds it to the user domain.",
+				"operationId": "CreateGroup",
+				"parameters": [{
+					"name": "Bearer Token",
+					"in": "header",
+					"description": "Access token prefixed with 'Bearer ', e.g. 'Bearer 123456abcdef'",
+					"required": true,
+					"schema": {
+						"type": "string"
+					}
+				},
+				{
+					"name": "body",
+					"in": "query",
+					"description": "The details of the group to create",
+					"required": true,
+					"schema": {
+						"type": "string",
+						"format": "binary"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "The group has been created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GroupResource"
+								}
+							}
+						}
+					},
+					"307": {
+						"description": "Temporary Redirect."
+					},
+					"308": {
+						"description": "Permanent Redirect."
+					},
+					"400": {
+						"description": "Request is unparsable, syntactically incorrect, or violates schema."
+					},
+					"401": {
+						"description": "Authorization failure.  The authorization header is invalid or missing."
+					},
+					"403": {
+						"description": "Operation is not permitted based on the supplied authorization."
+					},
+					"404": {
+						"description": "Not Found. Specified resource or endpoint does not exist."
+					},
+					"500": {
+						"description": "Internal Server Error."
+					},
+					"413": {
+						"description": "Payload too large."
+					},
+					"409": {
+						"description": "Conflict.The specified version number does not match the resource's latest version number, or a service provider refused to create a new, duplicate resource."
+					}
+				}
+			}
+		},
+		"/Groups/{groupKey}": {
+			"get": {
+				"tags": ["Group"],
+				"summary": "Get Group",
+				"description": "Queries group identity in the organization domain.",
+				"operationId": "GetGroup",
+				"parameters": [{
+					"name": "Bearer Token",
+					"in": "header",
+					"description": "Access token prefixed with 'Bearer ', e.g. 'Bearer 123456abcdef'",
+					"required": true,
+					"schema": {
+						"type": "string"
+					}
+				},
+				{
+					"name": "groupKey",
+					"in": "path",
+					"description": "The key of the group to query. The group must be in the organization domain",
+					"required": true,
+					"schema": {
+						"type": "integer"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "The request has succeeded",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GroupDefinition"
+								}
+							}
+						}
+					},
+					"307": {
+						"description": "Temporary Redirect."
+					},
+					"308": {
+						"description": "Permanent Redirect."
+					},
+					"400": {
+						"description": "Request is unparsable, syntactically incorrect, or violates schema."
+					},
+					"401": {
+						"description": "Authorization failure.  The authorization header is invalid or missing."
+					},
+					"403": {
+						"description": "Operation is not permitted based on the supplied authorization."
+					},
+					"404": {
+						"description": "Not Found. Specified resource or endpoint does not exist."
+					},
+					"500": {
+						"description": "Internal Server Error."
+					}
+				}
+			},
+			"put": {
+				"tags": ["Group"],
+				"summary": "Replace Group",
+				"description": "Updates an existing group. The request must include the full group definition. To modify one or more values without sending the full definition, see Update Group",
+				"operationId": "ReplaceGroup",
+				"parameters": [{
+					"name": "Bearer Token",
+					"in": "header",
+					"description": "Access token prefixed with 'Bearer ', e.g. 'Bearer 123456abcdef'",
+					"required": true,
+					"schema": {
+						"type": "string"
+					}
+				},
+				{
+					"name": "body",
+					"in": "query",
+					"description": "The new group data",
+					"required": true,
+					"schema": {
+						"type": "string",
+						"format": "binary"
+					}
+				},
+				{
+					"name": "groupKey",
+					"in": "path",
+					"description": "The key of the group to query. The group must be in the organization domain",
+					"required": true,
+					"schema": {
+						"type": "integer"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "The group has been replaced.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GroupDefinition"
+								}
+							}
+						}
+					},
+					"307": {
+						"description": "Temporary Redirect."
+					},
+					"308": {
+						"description": "Permanent Redirect."
+					},
+					"400": {
+						"description": "Request is unparsable, syntactically incorrect, or violates schema."
+					},
+					"401": {
+						"description": "Authorization failure.  The authorization header is invalid or missing."
+					},
+					"403": {
+						"description": "Operation is not permitted based on the supplied authorization."
+					},
+					"404": {
+						"description": "Not Found. Specified resource or endpoint does not exist."
+					},
+					"500": {
+						"description": "Internal Server Error."
+					},
+					"412": {
+						"description": "Failed to update.  Resource has changed on the server."
+					},
+					"409": {
+						"description": "Conflict.The specified version number does not match the resource's latest version number, or a service provider refused to create a new, duplicate resource."
+					}
+				}
+			},
+			"delete": {
+				"tags": ["Group"],
+				"summary": "Delete Group",
+				"description": "Deletes a group from the organization (but not from the account).",
+				"operationId": "DeleteGroup",
+				"parameters": [{
+					"name": "Bearer Token",
+					"in": "header",
+					"description": "Access token prefixed with 'Bearer ', e.g. 'Bearer 123456abcdef'",
+					"required": true,
+					"schema": {
+						"type": "string"
+					}
+				},
+				{
+					"name": "groupKey",
+					"in": "path",
+					"description": "The key of the group to query. The group must be in the organization domain",
+					"required": true,
+					"schema": {
+						"type": "integer"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "The request has succeeded"
+					},
+					"307": {
+						"description": "Temporary Redirect."
+					},
+					"308": {
+						"description": "Permanent Redirect."
+					},
+					"400": {
+						"description": "Request is unparsable, syntactically incorrect, or violates schema."
+					},
+					"401": {
+						"description": "Authorization failure.  The authorization header is invalid or missing."
+					},
+					"403": {
+						"description": "Operation is not permitted based on the supplied authorization."
+					},
+					"404": {
+						"description": "Not Found. Specified resource or endpoint does not exist."
+					},
+					"500": {
+						"description": "Internal Server Error."
+					},
+					"412": {
+						"description": "Failed to update.  Resource has changed on the server."
+					},
+					"409": {
+						"description": "Conflict.The specified version number does not match the resource's latest version number, or a service provider refused to create a new, duplicate resource."
+					}
+				}
+			},
+			"patch": {
+				"tags": ["Group"],
+				"summary": "Update Group",
+				"description": "Changes a limited set (or all if you choose) of the group's data.",
+				"operationId": "UpdateGroup",
+				"parameters": [{
+					"name": "Bearer Token",
+					"in": "header",
+					"description": "Access token prefixed with 'Bearer ', e.g. 'Bearer 123456abcdef'",
+					"required": true,
+					"schema": {
+						"type": "string"
+					}
+				},
+				{
+					"name": "body",
+					"in": "query",
+					"description": "The new group data",
+					"required": true,
+					"schema": {
+						"type": "string",
+						"format": "binary"
+					}
+				},
+				{
+					"name": "groupKey",
+					"in": "path",
+					"description": "The key of the group to query. The group must be in the organization domain",
+					"required": true,
+					"schema": {
+						"type": "integer"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "The group has been updated.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GroupDefinition"
+								}
+							}
+						}
+					},
+					"307": {
+						"description": "Temporary Redirect."
+					},
+					"308": {
+						"description": "Permanent Redirect."
+					},
+					"400": {
+						"description": "Request is unparsable, syntactically incorrect, or violates schema."
+					},
+					"401": {
+						"description": "Authorization failure.  The authorization header is invalid or missing."
+					},
+					"403": {
+						"description": "Operation is not permitted based on the supplied authorization."
+					},
+					"404": {
+						"description": "Not Found. Specified resource or endpoint does not exist."
+					},
+					"500": {
+						"description": "Internal Server Error."
+					},
+					"412": {
+						"description": "Failed to update.  Resource has changed on the server."
+					},
+					"409": {
+						"description": "Conflict.The specified version number does not match the resource's latest version number, or a service provider refused to create a new, duplicate resource."
+					}
+				}
+			}
+		},
+		"/ResourceTypes": {
+			"get": {
+				"tags": ["Schemas"],
+				"summary": "Get ResourceTypes",
+				"description": "Queries the ResourceTypes schema. The schema is defined in SCIM Core Schema",
+				"operationId": "GetResourceTypes",
+				"parameters": [{
+					"name": "Bearer Token",
+					"in": "header",
+					"description": "Access token prefixed with 'Bearer ', e.g. 'Bearer 123456abcdef'",
+					"required": true,
+					"schema": {
+						"type": "string"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "The request has succeeded.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ResourceTypes"
+								}
+							}
+						}
+					},
+					"307": {
+						"description": "Temporary Redirect."
+					},
+					"308": {
+						"description": "Permanent Redirect."
+					},
+					"400": {
+						"description": "Request is unparsable, syntactically incorrect, or violates schema."
+					},
+					"401": {
+						"description": "Authorization failure.  The authorization header is invalid or missing."
+					},
+					"403": {
+						"description": "Operation is not permitted based on the supplied authorization."
+					},
+					"404": {
+						"description": "Not Found. Specified resource or endpoint does not exist."
+					},
+					"500": {
+						"description": "Internal Server Error."
+					}
+				}
+			}
+		},
+		"/Schema": {
+			"get": {
+				"tags": ["Schemas"],
+				"summary": "Get Schema",
+				"description": "Queries the schema. The schema is defined in SCIM Core Schema",
+				"operationId": "GetSchema",
+				"parameters": [{
+					"name": "Bearer Token",
+					"in": "header",
+					"description": "Access token prefixed with 'Bearer ', e.g. 'Bearer 123456abcdef'",
+					"required": true,
+					"schema": {
+						"type": "string"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "The request has succeeded.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SCIMSchema"
+								}
+							}
+						}
+					},
+					"307": {
+						"description": "Temporary Redirect."
+					},
+					"308": {
+						"description": "Permanent Redirect."
+					},
+					"400": {
+						"description": "Request is unparsable, syntactically incorrect, or violates schema."
+					},
+					"401": {
+						"description": "Authorization failure.  The authorization header is invalid or missing."
+					},
+					"403": {
+						"description": "Operation is not permitted based on the supplied authorization."
+					},
+					"404": {
+						"description": "Not Found. Specified resource or endpoint does not exist."
+					},
+					"500": {
+						"description": "Internal Server Error."
+					}
+				}
+			}
+		},
+		"/ServiceProviderConfig": {
+			"get": {
+				"tags": ["Schemas"],
+				"summary": "Get ServiceProviderConfig",
+				"description": "Queries service provider configurations. The service provider configurations are defined in SCIM Core Schema ",
+				"operationId": "GetServiceProviderConfig",
+				"parameters": [{
+					"name": "Bearer Token",
+					"in": "header",
+					"description": "Access token prefixed with 'Bearer ', e.g. 'Bearer 123456abcdef'",
+					"required": true,
+					"schema": {
+						"type": "string"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "The request has succeeded.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ServiceProviderConfig"
+								}
+							}
+						}
+					},
+					"307": {
+						"description": "Temporary Redirect."
+					},
+					"308": {
+						"description": "Permanent Redirect."
+					},
+					"400": {
+						"description": "Request is unparsable, syntactically incorrect, or violates schema."
+					},
+					"401": {
+						"description": "Authorization failure.  The authorization header is invalid or missing."
+					},
+					"403": {
+						"description": "Operation is not permitted based on the supplied authorization."
+					},
+					"404": {
+						"description": "Not Found. Specified resource or endpoint does not exist."
+					},
+					"500": {
+						"description": "Internal Server Error."
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"Meta": {
+				"type": "object",
+				"properties": {
+					"location": {
+						"type": "string"
+					},
+					"resourceType": {
+						"type": "string"
+					}
+				}
+			},
+			"SchemaExtension": {
+				"required": ["schema"],
+				"type": "object",
+				"properties": {
+					"schema": {
+						"type": "string"
+					},
+					"required": {
+						"type": "boolean"
+					}
+				}
+			},
+			"Attribute": {
+				"type": "object",
+				"properties": {
+					"description": {
+						"type": "string"
+					},
+					"referenceTypes": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"type": {
+						"type": "string"
+					},
+					"required": {
+						"type": "boolean"
+					},
+					"subAttributes": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/SubAttributes"
+						}
+					},
+					"uniqueness": {
+						"type": "string"
+					},
+					"meta": {
+						"$ref": "#/components/schemas/Meta"
+					},
+					"name": {
+						"type": "string"
+					},
+					"canonicalValues": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"mutability": {
+						"type": "string"
+					},
+					"multiValued": {
+						"type": "boolean"
+					},
+					"caseExact": {
+						"type": "boolean"
+					},
+					"returned": {
+						"type": "string"
+					}
+				}
+			},
+			"SubAttributes": {
+				"type": "object",
+				"properties": {
+					"description": {
+						"type": "string"
+					},
+					"referenceTypes": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"type": {
+						"type": "string"
+					},
+					"required": {
+						"type": "boolean"
+					},
+					"uniqueness": {
+						"type": "string"
+					},
+					"meta": {
+						"$ref": "#/components/schemas/Meta"
+					},
+					"name": {
+						"type": "string"
+					},
+					"canonicalValues": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"mutability": {
+						"type": "string"
+					},
+					"multiValued": {
+						"type": "boolean"
+					},
+					"caseExact": {
+						"type": "boolean"
+					},
+					"returned": {
+						"type": "string"
+					}
+				}
+			},
+			"Resource": {
+				"required": ["name",
+				"endpoint",
+				"description"],
+				"type": "object",
+				"properties": {
+					"schema": {
+						"format": "uri",
+						"type": "string"
+					},
+					"endpoint": {
+						"type": "string"
+					},
+					"meta": {
+						"$ref": "#/components/schemas/Meta"
+					},
+					"schemas": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"name": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"schemaExtensions": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/SchemaExtension"
+						}
+					},
+					"id": {
+						"type": "string"
+					}
+				}
+			},
+			"ResourceTypes": {
+				"type": "object",
+				"properties": {
+					"totalResults": {
+						"format": "int32",
+						"type": "integer"
+					},
+					"validationMsg": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"schemas": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"resources": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/Resource"
+						}
+					}
+				}
+			},
+			"SCIMResource": {
+				"type": "object",
+				"properties": {
+					"meta": {
+						"$ref": "#/components/schemas/Meta"
+					},
+					"schemas": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"name": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"attributes": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/Attribute"
+						}
+					},
+					"id": {
+						"type": "string"
+					}
+				}
+			},
+			"SCIMSchema": {
+				"type": "object",
+				"properties": {
+					"totalResults": {
+						"format": "int32",
+						"type": "integer"
+					},
+					"validationMsg": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"schemas": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"resources": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/SCIMResource"
+						}
+					}
+				}
+			},
+			"UserResource": {
+				"required": ["userName",
+				"displayName"],
+				"properties": {
+					"emails": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/emails"
+						}
+					},
+					"meta": {
+						"$ref": "#/components/schemas/Meta"
+					},
+					"displayName": {
+						"description": "The name of the User, suitable for display to end-users.  The name SHOULD be the full name of the User being described, if known.",
+						"type": "string"
+					},
+					"schemas": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"roles": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/roles"
+						}
+					},
+					"externalId": {
+						"description": "An identifier for the resource as defined by the provisioning client.  Lilly Active Directory SID",
+						"type": "string"
+					},
+					"active": {
+						"description": "A Boolean value indicating the User status.",
+						"type": "boolean"
+					},
+					"groups": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/groups"
+						}
+					},
+					"id": {
+						"description": "Unique identifier for the User typically used by the user to directly authenticate to the service provider. Each User MUST include a non-empty id value.  This identifier MUST be unique across the Service Consumer's entire set of Users.",
+						"type": "string"
+					},
+					"userType": {
+						"description": "Used to identify the relationship between the organization and the user.",
+						"type": "string"
+					},
+					"userName": {
+						"description": "User Principal Name (UPN), per Lilly Active Directory",
+						"type": "string"
+					}
+				}
+			},
+			"UserDefinition": {
+				"properties": {
+					"emails": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/emails"
+						}
+					},
+					"meta": {
+						"$ref": "#/components/schemas/Meta"
+					},
+					"displayName": {
+						"description": "The name of the User, suitable for display to end-users.  The name SHOULD be the full name of the User being described, if known.",
+						"type": "string"
+					},
+					"roles": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/roles"
+						}
+					},
+					"externalId": {
+						"description": "An identifier for the resource as defined by the provisioning client.  Lilly Active Directory SID",
+						"type": "string"
+					},
+					"active": {
+						"description": "A Boolean value indicating the User status.",
+						"type": "boolean"
+					},
+					"groups": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/groups"
+						}
+					},
+					"id": {
+						"description": "Unique identifier for the User typically used by the user to directly authenticate to the service provider. Each User MUST include a non-empty id value.  This identifier MUST be unique across the Service Consumer's entire set of Users.",
+						"type": "string"
+					},
+					"userType": {
+						"description": "Used to identify the relationship between the organization and the user.",
+						"type": "string"
+					},
+					"userName": {
+						"description": "User Principal Name (UPN), per Lilly Active Directory",
+						"type": "string"
+					}
+				}
+			},
+			"emails": {
+				"required": ["value"],
+				"type": "object",
+				"properties": {
+					"type": {
+						"description": "A label indicating the attribute's function; will only be 'work'.",
+						"type": "string"
+					},
+					"value": {
+						"description": "Email address for the user",
+						"type": "string"
+					},
+					"primary": {
+						"description": "A Boolean value indicating the 'primary'.  Will only be 'true'",
+						"type": "boolean"
+					}
+				},
+				"description": "Email addresses for the user.  Only one address will be returned as that is all Azure AD supports."
+			},
+			"roles": {
+				"required": ["value"],
+				"type": "object",
+				"properties": {
+					"value": {
+						"description": "The value of a role.",
+						"type": "string"
+					}
+				},
+				"description": "A list of roles for the User"
+			},
+			"groups": {
+				"required": ["value"],
+				"type": "object",
+				"properties": {
+					"groupTypes": {
+						"description": "Group type(s)",
+						"type": "string"
+					},
+					"value": {
+						"description": "The identifier of the group.",
+						"type": "string"
+					},
+					"$ref": {
+						"type": "array",
+						"items": {
+							"description": "The URI of the corresponding 'Group' resource to which the user belongs.",
+							"type": "string"
+						}
+					}
+				},
+				"description": "A list of groups to which the user belongs"
+			},
+			"User": {
+				"properties": {
+					"totalResults": {
+						"format": "int32",
+						"type": "integer"
+					},
+					"startIndex": {
+						"format": "int32",
+						"type": "integer"
+					},
+					"itemsPerPage": {
+						"format": "int32",
+						"type": "integer"
+					},
+					"schemas": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"Resources": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/UserResource"
+						}
+					}
+				},
+				"description": "User"
+			},
+			"ServiceProviderConfig": {
+				"required": ["patch",
+				"etag",
+				"bulk",
+				"filter",
+				"changePassword",
+				"sort",
+				"authenticationSchemes"],
+				"properties": {
+					"patch": {
+						"$ref": "#/components/schemas/patch"
+					},
+					"filter": {
+						"$ref": "#/components/schemas/filter"
+					},
+					"documentationUri": {
+						"type": "array",
+						"items": {
+							"description": "An HTTP addressable URL pointing to the service provider's human consumable help documentation.",
+							"type": "string"
+						}
+					},
+					"meta": {
+						"$ref": "#/components/schemas/Meta"
+					},
+					"authenticationSchemes": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/authenticationSchemes"
+						}
+					},
+					"schemas": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"etag": {
+						"$ref": "#/components/schemas/etag"
+					},
+					"sort": {
+						"$ref": "#/components/schemas/sort"
+					},
+					"bulk": {
+						"$ref": "#/components/schemas/bulk"
+					},
+					"changePassword": {
+						"$ref": "#/components/schemas/changePassword"
+					}
+				},
+				"description": "Schema for representing the service provider's configuration"
+			},
+			"patch": {
+				"required": ["supported"],
+				"type": "object",
+				"properties": {
+					"supported": {
+						"description": "Boolean value specifying whether the operation is supported.",
+						"type": "boolean"
+					}
+				},
+				"description": "A complex type that specifies PATCH configuration options."
+			},
+			"etag": {
+				"required": ["supported"],
+				"type": "object",
+				"properties": {
+					"supported": {
+						"description": "Boolean value specifying whether the operation is supported.",
+						"type": "boolean"
+					}
+				},
+				"description": "A complex type that specifies ETAG configuration options."
+			},
+			"bulk": {
+				"required": ["supported",
+				"maxOperations",
+				"maxPayloadSize"],
+				"type": "object",
+				"properties": {
+					"maxPayloadSize": {
+						"format": "int32",
+						"description": "An integer value specifying the maximum payload size in bytes.",
+						"type": "integer"
+					},
+					"maxOperations": {
+						"format": "int32",
+						"description": "An integer value specifying the maximum number of operations.",
+						"type": "integer"
+					},
+					"supported": {
+						"description": "Boolean value specifying whether the operation is supported.",
+						"type": "boolean"
+					}
+				},
+				"description": "A complex type that specifies BULK configuration options."
+			},
+			"filter": {
+				"required": ["supported",
+				"maxResults"],
+				"type": "object",
+				"properties": {
+					"maxResults": {
+						"format": "int32",
+						"description": "Integer value specifying the maximum number of resources returned in a response.",
+						"type": "integer"
+					},
+					"supported": {
+						"description": "Boolean value specifying whether the operation is supported.",
+						"type": "boolean"
+					}
+				},
+				"description": "A complex type that specifies FILTER options."
+			},
+			"changePassword": {
+				"required": ["supported"],
+				"type": "object",
+				"properties": {
+					"supported": {
+						"description": "Boolean value specifying whether the operation is supported.",
+						"type": "boolean"
+					}
+				},
+				"description": "A complex type that specifies change password options."
+			},
+			"sort": {
+				"required": ["supported"],
+				"type": "object",
+				"properties": {
+					"supported": {
+						"description": "Boolean value specifying whether the operation is supported.",
+						"type": "boolean"
+					}
+				},
+				"description": "A complex type that specifies sort result options."
+			},
+			"authenticationSchemes": {
+				"required": ["name",
+				"description",
+				"type"],
+				"type": "object",
+				"properties": {
+					"documentationUri": {
+						"type": "array",
+						"items": {
+							"description": "An HTTP addressable URL pointing to the Authentication Scheme's usage documentation.",
+							"type": "string"
+						}
+					},
+					"name": {
+						"description": "The common authentication scheme name; e.g., HTTP Basic.",
+						"type": "string"
+					},
+					"description": {
+						"description": "A description of the authentication scheme.",
+						"type": "string"
+					},
+					"specUri": {
+						"type": "array",
+						"items": {
+							"description": "An HTTP addressable URL pointing to the Authentication Scheme's specification.",
+							"type": "string"
+						}
+					},
+					"type": {
+						"description": "The authentication scheme.  This specification defines the values \"oauth\", \"oauth2\", \"oauthbearertoken\", \"httpbasic\", and \"httpdigest\".  REQUIRED.",
+						"type": "string"
+					}
+				},
+				"description": "A complex type that specifies supported Authentication Scheme properties."
+			},
+			"GroupResource": {
+				"required": ["displayName"],
+				"properties": {
+					"displayName": {
+						"description": "The name of the Group, suitable for display to end-users.",
+						"type": "string"
+					},
+					"meta": {
+						"$ref": "#/components/schemas/Meta"
+					},
+					"schemas": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"members": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/members"
+						}
+					},
+					"id": {
+						"type": "string"
+					}
+				}
+			},
+			"GroupDefinition": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"displayName": {
+						"description": "The name of the Group, suitable for display to end-users.",
+						"type": "string"
+					},
+					"meta": {
+						"$ref": "#/components/schemas/Meta"
+					},
+					"members": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/members"
+						}
+					}
+				}
+			},
+			"members": {
+				"required": ["value"],
+				"type": "object",
+				"properties": {
+					"value": {
+						"description": "Identifier of the member of this Group.",
+						"type": "string"
+					},
+					"$ref": {
+						"type": "array",
+						"items": {
+							"description": "The URI corresponding to a SCIM resource that is a member of this Group",
+							"type": "string"
+						}
+					}
+				},
+				"description": "A list of members of the Group."
+			},
+			"Group": {
+				"properties": {
+					"totalResults": {
+						"format": "int32",
+						"type": "integer"
+					},
+					"startIndex": {
+						"format": "int32",
+						"type": "integer"
+					},
+					"itemsPerPage": {
+						"format": "int32",
+						"type": "integer"
+					},
+					"schemas": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"Resources": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/GroupResource"
+						}
+					}
+				},
+				"description": "Group"
+			}
+		}
+	}
+}
